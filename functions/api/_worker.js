@@ -1,7 +1,17 @@
-var worker_default = {
-  async fetch(request, env) {
+// functions/api/_worker.js
+import estadisticas_default from './estadisticas.js';
+import tickets_aleatorios_default from './tickets-aleatorios.js';
+import procesar_pago_default from './procesar-pago.js';
+import estadisticas_default2 from './admin/estadisticas.js';
+import tickets_vendidos_default from './admin/tickets-vendidos.js';
+import ordenes_default from './admin/ordenes.js';
+
+export default {
+  async fetch(request, env, ctx) {
     const url = new URL(request.url);
     const path = url.pathname;
+    
+    console.log('📨 Request:', path);
     
     // Rutas API
     if (path.startsWith("/api/")) {
@@ -25,11 +35,10 @@ var worker_default = {
       if (path === "/api/admin/ordenes" && request.method === "GET") {
         return await ordenes_default(env.DB);
       }
+      return new Response("API route not found", { status: 404 });
     }
     
-    // Archivos estáticos - DEJAR QUE [site] MANEJE ESTO
-    return env.ASSETS.fetch(request);
+    // Para archivos estáticos, DEJAR QUE PAGES LOS SIRVA AUTOMÁTICAMENTE
+    return fetch(request);
   }
 };
-
-export { worker_default as default };
