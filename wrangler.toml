@@ -1,10 +1,6 @@
 name = "mi-portal-rifas"
-main = "functions/api/_worker.js"
+main = "_worker.js"
 compatibility_date = "2025-11-26"
-
-[site]
-bucket = "./public"
-entry-point = "functions/api"
 
 [env.production]
 vars = { ENVIRONMENT = "production" }
