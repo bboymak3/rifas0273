@@ -2,6 +2,10 @@ name = "mi-portal-rifas"
 main = "functions/api/_worker.js"
 compatibility_date = "2025-11-26"
 
+[site]
+bucket = "./public"
+entry-point = "functions/api"
+
 [env.production]
 vars = { ENVIRONMENT = "production" }
 
@@ -9,5 +13,3 @@ vars = { ENVIRONMENT = "production" }
 binding = "DB"
 database_name = "rifas_db"
 database_id = "8975ab02-d5b3-4758-bd7f-d6834d813379"
-
-pages_build_output_dir = "public"
