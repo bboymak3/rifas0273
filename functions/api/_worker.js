@@ -13,7 +13,7 @@ export default {
     
     console.log('📨 Request:', path);
     
-    // Rutas API
+    // 1. Rutas API
     if (path.startsWith("/api/")) {
       if (path === "/api/estadisticas" && request.method === "GET") {
         return await estadisticas_default(env.DB);
@@ -38,7 +38,55 @@ export default {
       return new Response("API route not found", { status: 404 });
     }
     
-    // Para archivos estáticos, DEJAR QUE PAGES LOS SIRVA AUTOMÁTICAMENTE
-    return fetch(request);
+    // 2. Archivos estáticos - REDIRIGIR automáticamente a /public/
+    let filePath = path;
+    
+    // Si es la raíz, servir index.html de public
+    if (path === '/') {
+      filePath = '/public/index.html';
+    }
+    // Si es una ruta directa a HTML, CSS, JS, redirigir a public
+    else if (path.endsWith('.html') || path.startsWith('/css/') || path.startsWith('/js/')) {
+      filePath = '/public' + path;
+    }
+    // Para cualquier otra ruta que no sea API, servir de public
+    else if (!path.startsWith('/api/')) {
+      filePath = '/public' + (path.startsWith('/') ? path : '/' + path);
+    }
+    
+    // Headers para tipos de contenido
+    const mimeTypes = {
+      '.html': 'text/html',
+      '.css': 'text/css', 
+      '.js': 'application/javascript',
+      '.png': 'image/png',
+      '.jpg': 'image/jpeg',
+      '.svg': 'image/svg+xml'
+    };
+    
+    const extension = filePath.match(/\.\w+$/)?.[0] || '';
+    const contentType = mimeTypes[extension] || 'text/plain';
+    
+    try {
+      // Intentar servir el archivo desde public/
+      const response = await fetch(new URL(filePath, url));
+      
+      if (response.status === 200) {
+        return new Response(response.body, {
+          headers: {
+            'Content-Type': contentType,
+            'Cache-Control': 'public, max-age=3600'
+          }
+        });
+      }
+    } catch (error) {
+      console.error('Error serving file:', error);
+    }
+    
+    // Si no se encuentra, servir 404
+    return new Response('Página no encontrada: ' + path, { 
+      status: 404,
+      headers: { 'Content-Type': 'text/html; charset=utf-8' }
+    });
   }
 };
