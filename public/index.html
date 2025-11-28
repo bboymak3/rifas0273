@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Portal de Rifas</title>
+  <title>Portal de Rifas - Moto 0KM</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="/css/styles.css">
 </head>
@@ -11,9 +11,13 @@
   <header class="bg-header">
     <div class="container">
       <div class="row align-items-center">
-        <div class="col-md-6"><h1 class="h3 mb-0">🎯 Portal de Rifas</h1></div>
+        <div class="col-md-6">
+          <h1 class="h3 mb-0">🎯 Portal de Rifas</h1>
+        </div>
         <div class="col-md-6 text-end">
-          <a href="https://wa.me/+584167775771" class="btn btn-success">Contacto</a>
+          <a href="https://wa.me/+584167775771" class="btn btn-success">
+            <i class="bi bi-whatsapp"></i> Contacto
+          </a>
           <a href="/admin.html" class="btn btn-outline-light ms-2">Admin</a>
         </div>
       </div>
@@ -23,24 +27,38 @@
   <main class="container my-4">
     <div class="row justify-content-center">
       <div class="col-lg-10">
+        <!-- Imagen del premio -->
         <div class="text-center mb-4">
-          <img src="https://via.placeholder.com/800x400/007bff/ffffff?text=GRAN+PREMIO+MOTO+0KM" alt="Premio" class="prize-image">
+          <img src="https://via.placeholder.com/800x400/007bff/ffffff?text=GRAN+PREMIO+MOTO+0KM" 
+               alt="Premio Moto 0KM" class="prize-image">
         </div>
 
+        <!-- Barra de progreso -->
         <div class="progress-container mb-4">
-          <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width: 10%"><span id="progressText">10% VENDIDO</span></div></div>
-          <div class="progress-stats"><span id="soldTickets">1,000</span> / <span id="totalTickets">10,000</span> tickets vendidos</div>
+          <div class="progress-bar">
+            <div class="progress-fill" id="progressFill" style="width: 0%">
+              <span id="progressText">0% VENDIDO</span>
+            </div>
+          </div>
+          <div class="progress-stats">
+            <span id="soldTickets">0</span> / <span id="totalTickets">10,000</span> tickets vendidos
+          </div>
         </div>
 
+        <!-- Información del sorteo -->
         <div class="sorteo-info text-center mb-4">
           <h2>💰 Precio por ticket: <strong>Bs. 499.00</strong></h2>
-          <h3>📅 Sorteo: <strong>28 de Noviembre 2024</strong></h3>
+          <h3>📅 Sorteo: <strong>31 de Diciembre 2025</strong></h3>
         </div>
 
+        <!-- Botón para seleccionar números -->
         <div class="text-center mb-4">
-          <button class="btn btn-primary btn-lg" onclick="abrirSelectorNumeros()">SELECCIONAR MIS NÚMEROS MANUALMENTE</button>
+          <button class="btn btn-primary btn-lg" onclick="abrirSelectorNumeros()">
+            🎫 SELECCIONAR MIS NÚMEROS MANUALMENTE
+          </button>
         </div>
 
+        <!-- Tickets seleccionados -->
         <div class="selected-tickets-container" id="selectedTicketsContainer" style="display: none;">
           <h5>Tus números seleccionados:</h5>
           <div class="selected-tickets" id="selectedTickets"></div>
@@ -54,30 +72,38 @@
     </div>
   </main>
 
-  <!-- Modal selector -->
+  <!-- Modal para seleccionar números -->
   <div class="modal fade" id="numerosModal" tabindex="-1">
     <div class="modal-dialog modal-xl">
       <div class="modal-content">
         <div class="modal-header bg-primary text-white">
-          <h5 class="modal-title">SELECCIONA TUS NÚMEROS</h5>
+          <h5 class="modal-title">🎯 SELECCIONA TUS NÚMEROS (1-10000)</h5>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
           <div class="row">
             <div class="col-md-8">
-              <input type="number" class="form-control mb-3" id="buscarNumero" placeholder="Buscar número (1-10000)">
+              <input type="number" class="form-control mb-3" id="buscarNumero" 
+                     placeholder="🔍 Buscar número específico (1-10000)" min="1" max="10000">
               <div class="numeros-grid" id="numerosGrid"></div>
-              <nav class="pagination-container mt-3"><ul class="pagination justify-content-center" id="pagination"></ul></nav>
+              <nav class="pagination-container mt-3">
+                <ul class="pagination justify-content-center" id="pagination"></ul>
+              </nav>
             </div>
             <div class="col-md-4">
               <div class="selection-summary">
-                <h6>Tus números:</h6>
+                <h6>📋 Tus números seleccionados:</h6>
                 <div class="selected-numbers" id="selectedNumbersList"></div>
                 <div class="summary-total mt-3">
                   <strong>Cantidad: <span id="selectedCount">0</span></strong><br>
                   <strong>Total: Bs. <span id="selectedTotal">0.00</span></strong>
                 </div>
-                <button class="btn btn-success w-100 mt-3" onclick="confirmarSeleccion()">CONFIRMAR SELECCIÓN</button>
+                <button class="btn btn-success w-100 mt-3" onclick="confirmarSeleccion()">
+                  ✅ CONFIRMAR SELECCIÓN
+                </button>
+                <button class="btn btn-outline-secondary w-100 mt-2" onclick="limpiarSeleccion()">
+                  🗑️ LIMPIAR TODO
+                </button>
               </div>
             </div>
           </div>
@@ -86,7 +112,9 @@
     </div>
   </div>
 
-  <footer class="bg-dark text-white text-center py-3 mt-5"><p>Copyright © 2024 - Portal de Rifas</p></footer>
+  <footer class="bg-dark text-white text-center py-3 mt-5">
+    <p>Copyright © 2024 - Portal de Rifas</p>
+  </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="/js/app.js"></script>

@@ -1,8 +1,6 @@
-
-
 name = "mi-portal-rifas"
 main = "functions/api/_worker.js"
-compatibility_date = "2025-11-26"
+compatibility_date = "2024-11-28"
 
 [env.production]
 vars = { ENVIRONMENT = "production" }
