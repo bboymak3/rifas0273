@@ -1,44 +1,70 @@
-// functions/api/_worker.js
-import estadisticas_default from './estadisticas.js';
-import tickets_aleatorios_default from './tickets-aleatorios.js';
-import procesar_pago_default from './procesar-pago.js';
-import estadisticas_default2 from './admin/estadisticas.js';
-import tickets_vendidos_default from './admin/tickets-vendidos.js';
-import ordenes_default from './admin/ordenes.js';
+// ---------- API functions ----------
+import estadisticas from './estadisticas.js';
+import ticketsAleatorios from './tickets-aleatorios.js';
+import procesarPago from './procesar-pago.js';
+import adminEstadisticas from './admin/estadisticas.js';
+import adminTicketsVendidos from './admin/tickets-vendidos.js';
+import adminOrdenes from './admin/ordenes.js';
 
+// ---------- Worker completo (API + archivos estáticos) ----------
 export default {
-  async fetch(request, env, ctx) {
+  async fetch(request, env) {
     const url = new URL(request.url);
     const path = url.pathname;
-    
-    console.log('📨 Request:', path);
-    
-    // Rutas API
-    if (path.startsWith("/api/")) {
-      if (path === "/api/estadisticas" && request.method === "GET") {
-        return await estadisticas_default(env.DB);
-      }
-      if (path === "/api/tickets-aleatorios" && request.method === "POST") {
-        const body = await request.json();
-        return await tickets_aleatorios_default(env.DB, body);
-      }
-      if (path === "/api/procesar-pago" && request.method === "POST") {
-        const body = await request.json();
-        return await procesar_pago_default(env.DB, body);
-      }
-      if (path === "/api/admin/estadisticas" && request.method === "GET") {
-        return await estadisticas_default2(env.DB);
-      }
-      if (path === "/api/admin/tickets-vendidos" && request.method === "GET") {
-        return await tickets_vendidos_default(env.DB);
-      }
-      if (path === "/api/admin/ordenes" && request.method === "GET") {
-        return await ordenes_default(env.DB);
-      }
-      return new Response("API route not found", { status: 404 });
+
+    // 1) API routes
+    if (path === '/api/estadisticas' && request.method === 'GET') {
+      return await estadisticas(env.DB);
     }
-    
-    // Para archivos estáticos, DEJAR QUE PAGES LOS SIRVA AUTOMÁTICAMENTE
-    return fetch(request);
+    if (path === '/api/tickets-aleatorios' && request.method === 'POST') {
+      const body = await request.json();
+      return await ticketsAleatorios(env.DB, body);
+    }
+    if (path === '/api/procesar-pago' && request.method === 'POST') {
+      const body = await request.json();
+      return await procesarPago(env.DB, body);
+    }
+    if (path === '/api/admin/estadisticas' && request.method === 'GET') {
+      return await adminEstadisticas(env.DB);
+    }
+    if (path === '/api/admin/tickets-vendidos' && request.method === 'GET') {
+      return await adminTicketsVendidos(env.DB);
+    }
+    if (path === '/api/admin/ordenes' && request.method === 'GET') {
+      return await adminOrdenes(env.DB);
+    }
+
+    // 2) Archivos estáticos (HTML, CSS, JS, imágenes) desde /public
+    let filePath = path === '/' ? '/index.html' : path;
+
+    // Rutas directas que también deben servirse
+    if (path === '/compra.html' || path === '/admin.html') {
+      filePath = path; // ya está en /public, no tocamos nada
+    }
+
+    const ext = filePath.match(/\.\w+$/) ? filePath.match(/\.\w+$/)[0] : '';
+    const mimeTypes = {
+      '.html': 'text/html',
+      '.css': 'text/css',
+      '.js': 'application/javascript',
+      '.json': 'application/json',
+      '.png': 'image/png',
+      '.jpg': 'image/jpeg',
+      '.gif': 'image/gif',
+      '.svg': 'image/svg+xml',
+      '.ico': 'image/x-icon'
+    };
+    const contentType = mimeTypes[ext] || 'text/plain';
+
+    // Busca en /public (tu carpeta real)
+    try {
+      const publicUrl = new URL('/public' + filePath, url);
+      const file = await env.ASSETS.fetch(publicUrl);
+      if (file.ok) {
+        return new Response(file.body, { headers: { 'Content-Type': contentType } });
+      }
+    } catch (e) {}
+
+    return new Response('Not Found', { status: 404 });
   }
 };
