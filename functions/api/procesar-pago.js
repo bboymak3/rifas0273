@@ -19,14 +19,18 @@ export async function onRequestPost(context) {
         error: 'Algunos tickets ya fueron vendidos' 
       }), { 
         status: 400,
-        headers: { 'Content-Type': 'application/json' } 
+        headers: { 
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
+        } 
       });
     }
 
+    // INSERT corregido - agregar rifa_id
     const orden = await db.prepare(
-      `INSERT INTO ordenes (nombre, telefono, email, metodo_pago, comprobante, tickets, total, estado)
-       VALUES (?, ?, ?, ?, ?, ?, ?, 'pendiente')`
-    ).bind(nombre, telefono, email, metodoPago, comprobante, tickets.join(','), total).run();
+      `INSERT INTO ordenes (rifa_id, nombre, telefono, email, metodo_pago, comprobante, tickets, total, estado)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pendiente')`
+    ).bind(rifaId, nombre, telefono, email, metodoPago, comprobante, tickets.join(','), total).run();
 
     const ordenId = orden.meta.last_row_id;
 

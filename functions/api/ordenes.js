@@ -3,17 +3,15 @@ export async function onRequestGet(context) {
   
   try {
     const db = env.DB;
-    const vendidos = await db.prepare('SELECT COUNT(*) as count FROM tickets WHERE vendido = 1').first();
-    const disponibles = await db.prepare('SELECT COUNT(*) as count FROM tickets WHERE vendido = 0').first();
-    const recaudado = await db.prepare('SELECT SUM(total) as sum FROM ordenes WHERE estado = "pendiente"').first();
+    const ordenes = await db.prepare(`
+      SELECT id, nombre, telefono, email, tickets, total, estado, fecha_creacion as fecha
+      FROM ordenes
+      ORDER BY fecha_creacion DESC
+    `).all();
 
     return new Response(JSON.stringify({
       success: true,
-      data: {
-        vendidos: vendidos.count,
-        disponibles: disponibles.count,
-        recaudado: recaudado.sum || 0
-      }
+      data: { ordenes: ordenes.results }
     }), { 
       headers: { 
         'Content-Type': 'application/json',
