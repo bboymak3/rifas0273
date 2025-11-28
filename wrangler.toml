@@ -10,4 +10,4 @@ vars = { ENVIRONMENT = "production" }
 [[env.production.d1_databases]]
 binding = "DB"
 database_name = "rifas_db"
-database_id = "8975ab02-d5b3-4758-bd7f-d6834d813379"
+database_id = ""
