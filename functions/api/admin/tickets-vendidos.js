@@ -1,6 +1,5 @@
 export async function onRequestGet(context) {
   const { env } = context;
-  
   try {
     const db = env.DB;
     const tickets = await db.prepare(`
@@ -14,21 +13,12 @@ export async function onRequestGet(context) {
       success: true,
       data: { tickets: tickets.results }
     }), { 
-      headers: { 
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*'
-      } 
+      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } 
     });
   } catch (error) {
-    return new Response(JSON.stringify({ 
-      success: false, 
-      error: error.message 
-    }), { 
+    return new Response(JSON.stringify({ success: false, error: error.message }), { 
       status: 500,
-      headers: { 
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*'
-      } 
+      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } 
     });
   }
 }

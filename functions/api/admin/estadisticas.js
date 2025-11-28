@@ -1,6 +1,5 @@
 export async function onRequestGet(context) {
   const { env } = context;
-  
   try {
     const db = env.DB;
     const vendidos = await db.prepare('SELECT COUNT(*) as count FROM tickets WHERE vendido = 1').first();
@@ -9,27 +8,14 @@ export async function onRequestGet(context) {
 
     return new Response(JSON.stringify({
       success: true,
-      data: {
-        vendidos: vendidos.count,
-        disponibles: disponibles.count,
-        recaudado: recaudado.sum || 0
-      }
+      data: { vendidos: vendidos.count, disponibles: disponibles.count, recaudado: recaudado.sum || 0 }
     }), { 
-      headers: { 
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*'
-      } 
+      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } 
     });
   } catch (error) {
-    return new Response(JSON.stringify({ 
-      success: false, 
-      error: error.message 
-    }), { 
+    return new Response(JSON.stringify({ success: false, error: error.message }), { 
       status: 500,
-      headers: { 
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*'
-      } 
+      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } 
     });
   }
 }
