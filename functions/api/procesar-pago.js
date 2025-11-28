@@ -1,7 +1,13 @@
-export default async function (db, body) {
-  const { rifaId, tickets, nombre, telefono, email, metodoPago, comprobante, total } = body;
-
+export async function onRequestPost(context) {
+  const { request, env } = context;
+  
   try {
+    const body = await request.json();
+    const { rifaId, tickets, nombre, telefono, email, metodoPago, comprobante, total } = body;
+
+    // Usar la base de datos desde el environment
+    const db = env.DB;
+
     const placeholders = tickets.map(() => '?').join(',');
     const vendidos = await db.prepare(
       `SELECT COUNT(*) as count FROM tickets WHERE numero IN (${placeholders}) AND vendido = 1`
@@ -12,6 +18,7 @@ export default async function (db, body) {
         success: false, 
         error: 'Algunos tickets ya fueron vendidos' 
       }), { 
+        status: 400,
         headers: { 'Content-Type': 'application/json' } 
       });
     }
@@ -31,7 +38,10 @@ export default async function (db, body) {
       success: true,
       orderId: ordenId
     }), { 
-      headers: { 'Content-Type': 'application/json' } 
+      headers: { 
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*'
+      } 
     });
 
   } catch (error) {
@@ -40,7 +50,10 @@ export default async function (db, body) {
       error: error.message 
     }), { 
       status: 500,
-      headers: { 'Content-Type': 'application/json' } 
+      headers: { 
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*'
+      } 
     });
   }
 }
